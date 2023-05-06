@@ -1,0 +1,3 @@
+venv
+TestWork/celerybeat-schedule.db
+TestWork/text.txt
