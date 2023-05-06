@@ -54,3 +54,10 @@ class GateAll(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GateApi(APIView):
+    def get(self, request, pk):
+        gate = get_object_or_404(Gate, pk=pk)
+        serializer = GateSerializer(gate)
+        return Response(serializer.data)
