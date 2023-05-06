@@ -1,11 +1,9 @@
-
 from django.db import models
 
 
 class UserOS(models.Model):
     login = models.CharField(primary_key=True)
     time_detection = models.DateTimeField(auto_now_add=True)
-    permit_id = models.CharField(default=login.__str__() + time_detection.__str__())
     status = models.BooleanField(default=True)
 
 
