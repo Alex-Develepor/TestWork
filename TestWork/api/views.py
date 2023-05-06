@@ -47,3 +47,10 @@ class GateAll(APIView):
         gates = Gate.objects.all()
         serializer = GateSerializer(gates, many=True)
         return Response(serializer.data)
+
+    def post(self, request):
+        serializer = GateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
