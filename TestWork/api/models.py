@@ -1,3 +1,4 @@
+import django.utils.timezone
 from django.db import models
 
 
@@ -9,6 +10,7 @@ class UserOS(models.Model):
 
 class Gate(models.Model):
     num_chekpoint = models.CharField(primary_key=True)
+    time_of_work_until = models.DateTimeField(default=django.utils.timezone.now)
 
 
 class LogVisit(models.Model):
