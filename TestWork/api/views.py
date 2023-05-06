@@ -69,3 +69,8 @@ class GateApi(APIView):
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
+
+    def delete(self, request, pk):
+        gate = get_object_or_404(Gate, pk=pk)
+        gate.delete()
+        return Response(status=status.HTTP_400_BAD_REQUEST)
