@@ -19,8 +19,8 @@ class UserOSSerializer(serializers.ModelSerializer):
         instance.login = validated_data.get('login', instance.login)
         instance.status = validated_data.get('status', instance.status)
         instance.save()
-
         return instance
+
 
 class GateSerializer(serializers.ModelSerializer):
     num_chekpoint = serializers.CharField()
@@ -28,3 +28,8 @@ class GateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Gate
         fields = ('num_chekpoint',)
+
+    def update(self, instance, validated_data):
+        instance.num_chekpoint = validated_data.get('num_chekpoint', instance.num_chekpoint)
+        instance.save()
+        return instance

@@ -61,3 +61,11 @@ class GateApi(APIView):
         gate = get_object_or_404(Gate, pk=pk)
         serializer = GateSerializer(gate)
         return Response(serializer.data)
+
+    def put(self, request, **kwargs):
+        saved_gate = Gate.objects.get(pk=kwargs['pk'])
+        data = request.data
+        serializer = GateSerializer(instance=saved_gate, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)
