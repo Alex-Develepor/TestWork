@@ -12,9 +12,8 @@ class Gate(models.Model):
 
 
 class LogVisit(models.Model):
-    id = models.IntegerField(primary_key=True)
     user = models.CharField()
-    status = models.BooleanField()
+    status = models.BooleanField(default=False)
     num_checkpoint = models.CharField()
-    permit_id = models.CharField(default=None)
+    permit_id = models.CharField()
     time_detection = models.DateTimeField(auto_now_add=True)

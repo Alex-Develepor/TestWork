@@ -2,9 +2,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+import logging
 from .models import Gate, LogVisit, UserOS
-from .serializers import GateSerializer, UserOSSerializer
+from .serializers import GateSerializer, UserOSSerializer, LogVisitSerializer
+
+logging.basicConfig(level=logging.INFO, filename="logfile.log",
+                    format="%(asctime)s %(levelname)s %(message)s")
+
 
 
 class GetUser(APIView):
@@ -74,3 +78,41 @@ class GateApi(APIView):
         gate = get_object_or_404(Gate, pk=pk)
         gate.delete()
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogVisitApi(APIView):
+    def get(self, request):
+        logvisit = LogVisit.objects.all()
+        serializer = LogVisitSerializer(logvisit, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = LogVisitSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = UserOS.objects.get(login=str(serializer.validated_data['user']))
+            except UserOS.DoesNotExist:
+                logging.info(f'Пользователь {serializer.validated_data["user"]} не найден')
+                return Response({f'Пользователь {serializer.validated_data["user"]} не найден'})
+            try:
+                Gate.objects.get(num_chekpoint=str(serializer.validated_data['num_checkpoint']))
+            except Gate.DoesNotExist:
+                logging.info(f'КПП {serializer.data["num_checkpoint"]} не найдено')
+                return Response({f'КПП {serializer.data["num_checkpoint"]} не найдено'})
+            serializer_user = UserOSSerializer(user)
+            if serializer.validated_data['permit_id'] == serializer_user.data['permit']:
+                if serializer_user.data['status'] is True:
+                    user.status = False
+                    serializer.validated_data['status'] = False
+                    logging.info(f'Пользователь {serializer.validated_data["user"]} вышел')
+                else:
+                    user.status = True
+                    serializer.validated_data['status'] = True
+                    logging.info(f'Пользователь {serializer.validated_data["user"]} зашел')
+                user.save()
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                logging.info('Некорректный пропуск')
+                return Response({'Некорректный пропуск'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -33,3 +33,9 @@ class GateSerializer(serializers.ModelSerializer):
         instance.num_chekpoint = validated_data.get('num_chekpoint', instance.num_chekpoint)
         instance.save()
         return instance
+
+
+class LogVisitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.LogVisit
+        fields = ('user', 'time_detection', 'permit_id', 'status', 'num_checkpoint',)
