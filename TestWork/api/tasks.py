@@ -7,8 +7,8 @@ import os
 
 @periodic_task(run_every=crontab(minute='*/5'), name='chek_user_in_os')
 def chek_user_in_os():
-    myCmd = 'cut -d: -f1 /etc/passwd > tetx.txt'
-    os.system(myCmd)
+    mycmd = 'cut -d: -f1 /etc/passwd > tetx.txt'
+    os.system(mycmd)
     list_users = models.UserOS.objects.all().values('login')
     res1 = []
     for obj in list(list_users):

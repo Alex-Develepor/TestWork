@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from .models import UserOS, Gate, LogVisit
-from .serializers import UserOSSerializer
+from rest_framework.views import APIView
+
+from .models import Gate, LogVisit, UserOS
+from .serializers import GateSerializer, UserOSSerializer
 
 
 class GetUser(APIView):
@@ -39,3 +40,10 @@ class UserViewSet(APIView):
         user = get_object_or_404(UserOS, pk=pk)
         user.delete()
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class GateAll(APIView):
+    def get(self, request):
+        gates = Gate.objects.all()
+        serializer = GateSerializer(gates, many=True)
+        return Response(serializer.data)

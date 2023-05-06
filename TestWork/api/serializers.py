@@ -21,3 +21,10 @@ class UserOSSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class GateSerializer(serializers.ModelSerializer):
+    num_chekpoint = serializers.CharField()
+
+    class Meta:
+        model = models.Gate
+        fields = ('num_chekpoint',)
